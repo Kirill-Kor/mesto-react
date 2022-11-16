@@ -1,5 +1,5 @@
 
-export default function PopupWithImage({ card, onClose }) {
+export default function ImagePopup({ card, onClose }) {
     if(card)
         return (
             <div className={`popup popup_type_image popup_opened`}>

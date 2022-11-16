@@ -4,7 +4,7 @@ import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm';
-import PopupWithImage from './PopupWithImage'
+import ImagePopup from './ImagePopup'
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -83,11 +83,11 @@ function App() {
         <span className="edit-form__field-error place-link-input-error"></span>
       </PopupWithForm>}
 
-      <PopupWithImage
+      <ImagePopup
         card={selectedCard}
         onClose={closeAllPopups}>
 
-      </PopupWithImage>
+      </ImagePopup>
 
       <Footer />
 
