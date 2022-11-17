@@ -6,7 +6,7 @@ function PopupWithForm({ name, title, buttonText, isOpen, onClose, ...props }) {
             <div className="popup__container">
                 <h2 className="popup__title">{title}</h2>
 
-                <form className={`edit-form edit-form_type_${name} name=${name}`} noValidate>
+                <form className={`edit-form edit-form_type_${name}`} name={name} noValidate>
                     {props.children}
                     <button className="save-button" type="submit">{buttonText}</button>
                 </form>
