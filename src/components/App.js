@@ -27,6 +27,9 @@ function App() {
         setCurrentUser(user);
         setIsLoading(false);
       })
+      .catch(error => {
+        console.log(error);
+      })
   }, [])
 
   const [cardsArray, setCardsArray] = useState([]);
@@ -39,9 +42,15 @@ function App() {
         .then(newCard => {
           setCardsArray(cardsArray => cardsArray.map(c => c._id === card._id ? newCard : c))
         })
+        .catch(error => {
+          console.log(error);
+        })
       : api.setLike(card._id)
         .then(newCard => {
           setCardsArray(cardsArray => cardsArray.map(c => c._id === card._id ? newCard : c))
+        })
+        .catch(error => {
+          console.log(error);
         })
   }
 
@@ -53,12 +62,18 @@ function App() {
             return c;
         }))
       })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   useEffect(() => {
     api.getInitialCards()
       .then((cards) => {
         setCardsArray(cards);
+      })
+      .catch(error => {
+        console.log(error);
       })
   }, [])
 
@@ -90,6 +105,9 @@ function App() {
       .then((user) => {
         setCurrentUser(user);
       })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   function handleUpdateAvatar(avatarLink) {
@@ -97,19 +115,26 @@ function App() {
       .then((user) => {
         setCurrentUser(user);
       })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
-  function handleAddPlace({name, link}) {
-    api.addNewCard({name,link})
+  function handleAddPlace({ name, link }) {
+    api.addNewCard({ name, link })
       .then((newCard) => {
         setCardsArray([newCard, ...cardsArray]);
+      })
+      .catch(error => {
+        console.log(error);
       })
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className="container">
-        <Header />
+
+    <div className="container">
+      <Header />
+      <CurrentUserContext.Provider value={currentUser || ''}>
         <Main onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -134,24 +159,24 @@ function App() {
             onUpdateUser={handleUpdateUser}
           />
         }
+      </CurrentUserContext.Provider>
+      {isAddPlacePopupOpen &&
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlace}
+        />}
 
-        {isAddPlacePopupOpen &&
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlace}
-          />}
+      <ImagePopup
+        card={selectedCard}
+        onClose={closeAllPopups} />
 
-        <ImagePopup
-          card={selectedCard}
-          onClose={closeAllPopups}>
 
-        </ImagePopup>
 
-        <Footer />
+      <Footer />
 
-      </div>
-    </CurrentUserContext.Provider>
+    </div>
+
   );
 }
 
