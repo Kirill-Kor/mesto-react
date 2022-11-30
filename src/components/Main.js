@@ -1,30 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 import api from '../utils/Api';
 import Card from './Card';
 import Loading from './Loading'
 
 function Main(props) {
-
-    const [userName, setUserName] = useState('');
-    const [userInfo, setUserInfo] = useState('');
-    const [userAvatar, setUserAvatar] = useState('');
-
-    const [cardsArray, setCardsArray] = useState([]);
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getInitialCards()])
-            .then(([{ name, about, avatar }, cards]) => {
-                setUserName(name);
-                setUserInfo(about);
-                setUserAvatar(avatar);
-                setCardsArray(cards);
-
-                setIsLoading(false);
-            })
-    }, [])
+    const user = useContext(CurrentUserContext);
 
     return (
         <main className="content">
@@ -32,16 +14,16 @@ function Main(props) {
             <section className="profile">
                 <div className="profile__avatar-container" onClick={props.onEditAvatar}>
                     {
-                        isLoading
+                        props.isLoading
                             ? <Loading />
-                            : <img className="profile__avatar" src={userAvatar} alt="Аватар пользователя" />
+                            : <img className="profile__avatar" src={user.avatar} alt="Аватар пользователя" />
                     }
                     <div className="profile__avatar-overlay"></div>
                 </div>
 
                 <div className="profile__info">
-                    <h1 className="profile__name">{userName}</h1>
-                    <p className="profile__description">{userInfo}</p>
+                    <h1 className="profile__name">{user.name}</h1>
+                    <p className="profile__description">{user.about}</p>
                     <button className="profile__edit-button" onClick={props.onEditProfile} type="button" aria-label="Изменить"></button>
                 </div>
                 <button className="profile__add-button" onClick={props.onAddPlace} type="button" aria-label="Добавить"></button>
@@ -49,8 +31,15 @@ function Main(props) {
 
             <section className="places">
                 <ul className="places__table">
-                    {cardsArray.map((card) =>
-                        <Card card={card} key={card._id} onCardClick={props.onCardClick}></Card>
+                    {props.cards.map((card) =>
+                        <CurrentUserContext.Provider key={card._id} value={user}>
+                            <Card
+                                card={card}
+                                onCardClick={props.onCardClick}
+                                onCardLike={props.onCardLike}
+                                onCardDelete={props.onCardDelete}
+                            ></Card>
+                        </CurrentUserContext.Provider>
                     )}
 
                 </ul>
